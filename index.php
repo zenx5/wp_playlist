@@ -1,3 +1,3 @@
 <?php
 
-// El Silencio es oro
+	echo "empty";
