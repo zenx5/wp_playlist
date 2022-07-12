@@ -1,0 +1,7 @@
+<?php
+	
+	define("WP_PL_LICENSE", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRlZW5kIjoiMDUtMDItMjAyMSIsImRhdGVzdGFydCI6IjI5LTAxLTIwMjEiLCJubCI6ZmFsc2V9.IHcOLNnssWBxQMYz_YG0Yurqk4VmiErZxTmRreiDpRo");
+
+	
+
+	
