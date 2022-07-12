@@ -29,13 +29,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 				return true;
 			}
 			public static function get_no_access_content(){
-				return "No Access";
+				return "<center>Not Access</center>";
 			}
 		}
 	}
 ?>
 	
-	<?php if ( Woo_Handler_Content::has_access() ): ?>
+	<?php if ( Woo_Handler_Content::has_access() && PlayList::licenseValidate()): ?>
 
 	<script src="https://use.fontawesome.com/99d9817277.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">

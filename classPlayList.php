@@ -34,8 +34,8 @@ class PlayList {
 	/*
 		Instalación, Desinstalación y Configuración
 	*/
-	private static $ExpRegUrl = "^https?:\/\/(w{3}.)?youtube.com\/watch\?v=[a-zA-Z0-9_$#]{1,}|^https?:\/\/(w{3}.)?vimeo.com\/[0-9]{1,}";
-	private static $ExpRegName = "[a-zA-Z0-9 ]{5,50}";
+	private static $ExpRegUrl = "^https?:\/\/(w{3}.)?youtube.com\/watch\?v=.{1,}|^https?:\/\/(w{3}.)?vimeo.com\/[0-9]{1,}";
+	private static $ExpRegName = "[ -\.0-9a-zA-Z\?¿]{5,50}";
 
 	private static $fields = array(
 		array( 'name' => 'Profesor', 'type' => 'input', 'type-attr' => 'text'),
@@ -112,10 +112,12 @@ class PlayList {
 		register_post_type( 'playlist', $arguments_post_type );
 	}
 
-	public static function licenseValidate(){
-		$license = get_option('wp-pl-license',WP_PL_LICENSE);
+	public static function licenseValidate($license = null){
+		if( ! $license ){
+			$license = get_option('wp-pl-license',WP_PL_LICENSE);
+		}
 		$jwt = new JWT($license);
-		$hoy = date('d-m-Y');		
+		$hoy = date('d-m-Y');
 		return self::beutydate($hoy,'-') < self::beutydate($jwt->getData()->dateend, '-') || $jwt->getData()->nl;
 	}
 
@@ -262,13 +264,15 @@ class PlayList {
 		if( ! PlayList::licenseValidate() ){
 			?>	
 
-				<p>Parece que su licensia caduco, pongase en contacto con el administrador de su web p con el fabricante del plugin para obtener una nueva</p>
-				<center>	
-					<label for="wp-pl-license-key">Licensia</label>
-					<input 
-						type="text" 
-						id="wp-pl-license-key"
-						name="wp-pl-license-key"/><br>
+				<p>Parece que su licensia caduco, pongase en contacto con el administrador de su web o con el fabricante del plugin para obtener una nueva. <a href="https://facebook.com/8martinez">Octavio Martinez</a></p>
+				
+				<label for="wp-pl-license-key"><b>Licensia</b></label>
+				<input 
+					type="text" 
+					id="wp-pl-license-key"
+					name="wp-pl-license-key"
+					style="width: 100%;" /><br><br>
+				<center>
 					<input 
 						type="submit" 
 						id="wp-pl-btn-submit"
@@ -344,11 +348,11 @@ class PlayList {
 							<input 
 								type="submit" 
 								name="wp-pl-btn-action-<?php echo $index; ?>"
-								value="🔽">
+								value="▼">
 							<input 
 								type="submit" 
 								name="wp-pl-btn-action-<?php echo $index; ?>"
-								value="🔼">
+								value="▲">
 						</center>
 					</td>
 				</tr>
@@ -427,6 +431,7 @@ class PlayList {
 			$details[$field['name']]['check'] = isset($_POST['wp-pl-details-check-'.$field['name']])?'checked':'';
 		}
 		update_post_meta( $post_id, 'wp-pl-details',  json_encode( $details )  );
+
 		if( ! isset($_POST['wp-pl-btn-submit']) ) {
 			for($i = 0; $i < $count; $i++){
 				$action_band = $action_band || isset($_POST["wp-pl-btn-action-$i"]);
@@ -457,7 +462,7 @@ class PlayList {
 					if( isset($_POST["wp-pl-name-$i"]) && isset($_POST["wp-pl-url-$i"]) ){
 						$name = $_POST["wp-pl-name-$i"];
 						$url = $_POST["wp-pl-url-$i"];
-						if( self::validateExpReg($name, "/".self.$ExpRegName."/") && self::validateExpReg($url, "/".self.$ExpRegUrl."/") ){
+						if( self::validateExpReg($name, "/".self::$ExpRegName."/") && self::validateExpReg($url, "/".self::$ExpRegUrl."/") ){
 							$videos[$i] = array(
 								'name' => $name,
 								'url' => $url
@@ -492,7 +497,7 @@ class PlayList {
 					}
 				}
 			}
-			elseif( $_POST['wp-pl-btn-action-'.$action_index] == "🔽"){
+			elseif( $_POST['wp-pl-btn-action-'.$action_index] == "▼"){
 				if( $action_index < $count - 1 ){
 					$aux =  $videos[$action_index];
 					$videos[$action_index] = $videos[$action_index + 1];
@@ -500,7 +505,7 @@ class PlayList {
 				}
 				$new_videos = $videos;
 			}
-			elseif( $_POST['wp-pl-btn-action-'.$action_index] == "🔼"){
+			elseif( $_POST['wp-pl-btn-action-'.$action_index] == "▲"){
 				if( $action_index > 0 ){
 					$aux =  $videos[$action_index];
 					$videos[$action_index] = $videos[$action_index - 1];
